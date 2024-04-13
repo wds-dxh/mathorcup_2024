@@ -1,0 +1,9 @@
+path: /Users/dsw/Downloads/file/2_Train
+# Path: mydata.yaml
+
+train: data/images/train  # 128 images
+val: data/images/train  # 128 images
+
+nc: 1
+names:
+  Oracle: 0

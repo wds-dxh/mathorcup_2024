@@ -2,7 +2,7 @@
 Author: wds-dxh wdsnpshy@163.com
 Date: 2024-04-12 15:57:25
 LastEditors: wds-dxh wdsnpshy@163.com
-LastEditTime: 2024-04-13 12:49:06
+LastEditTime: 2024-04-15 14:33:13
 FilePath: /mathor_cup/questions_1/main.py
 Description: 甲骨文特征提取
 微信: 15310638214 
@@ -11,6 +11,9 @@ Copyright (c) 2024 by ${wds-dxh}, All Rights Reserved.
 '''
 import cv2
 import numpy as np
+
+#操作excel操作
+import openpyxl
 
 
 
@@ -32,7 +35,6 @@ class FeatureExtract:
         dilation = cv2.dilate(closing1,self.kernel,iterations = 1)
         #高斯滤波
         gaussian = cv2.GaussianBlur(dilation,(3,3),0)#高斯滤波，参数：1.原图像，2.卷积核大小，3.x方向标准差
-    
         #腐蚀
         erosion = cv2.erode(gaussian,self.kernel,iterations = 1)
         #开运算

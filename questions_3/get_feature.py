@@ -2,8 +2,8 @@
 Author: wds-dxh wdsnpshy@163.com
 Date: 2024-04-12 15:57:25
 LastEditors: wds-dxh wdsnpshy@163.com
-LastEditTime: 2024-04-12 18:51:19
-FilePath: /mathor_cup/questions_1/questions_1.py
+LastEditTime: 2024-04-14 15:57:12
+FilePath: /mathor_cup/questions_3/get_feature.py
 Description: 甲骨文特征提取
 微信: 15310638214 
 邮箱：wdsnpshy@163.com 
@@ -13,6 +13,7 @@ import cv2
 import numpy as np
 
 
+
 class FeatureExtract:
     def __init__(self,kernel = np.ones((2,2),dtype=np.int8), thresh = 100):
         self.kernel = kernel
@@ -20,17 +21,28 @@ class FeatureExtract:
         print('init FeatureExtract')
 
     def get_feature(self, img):
+        
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         #开运算
         opening1 = cv2.morphologyEx(gray.copy(),cv2.MORPH_OPEN,self.kernel, iterations=1)
         # 闭运算
         closing1 = cv2.morphologyEx(opening1.copy(), cv2.MORPH_CLOSE, self.kernel,iterations=1)
-        #ret是阈值，thresh1是二值化后的图像
-        ret,thresh1 = cv2.threshold(closing1,self.thresh,255,cv2.THRESH_BINARY)  
-        #再次开运算，去除噪声
-        opening2 = cv2.morphologyEx(thresh1.copy(),cv2.MORPH_OPEN,self.kernel, iterations=1)
 
-        return opening2
+        #膨胀
+        dilation = cv2.dilate(closing1,self.kernel,iterations = 1)
+        #高斯滤波
+        gaussian = cv2.GaussianBlur(dilation,(3,3),0)#高斯滤波，参数：1.原图像，2.卷积核大小，3.x方向标准差
+    
+        #腐蚀
+        erosion = cv2.erode(gaussian,self.kernel,iterations = 1)
+        #开运算
+        opening = cv2.morphologyEx(erosion,cv2.MORPH_OPEN,self.kernel, iterations=1)
+        # ret是阈值，thresh1是二值化后的图像
+        _,thresh1 = cv2.threshold(opening,self.thresh,255,cv2.THRESH_BINARY)  
+        #转换为三通道
+        thresh1 = cv2.cvtColor(thresh1,cv2.COLOR_GRAY2BGR)
+
+        return thresh1
 
 
 if __name__ == '__main__':
